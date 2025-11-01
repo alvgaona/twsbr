@@ -223,27 +223,31 @@ X_global = cumtrapz(t, vx_global);
 Y_global = cumtrapz(t, vy_global);
 
 %% Plot results
-figure('Position', [100, 100, 1400, 900]);
+figure('Position', [100, 100, 1400, 900], 'Color', 'w');
+set(0, 'DefaultTextInterpreter', 'latex');
+set(0, 'DefaultLegendInterpreter', 'latex');
 
 subplot(3, 3, 1);
-plot(t, x);
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('x [m]', 'interpreter', 'latex');
-title('Position', 'interpreter', 'latex', 'FontSize', 12);
+plot(t, x, 'LineWidth', 2);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('$x$ [m]', 'FontSize', 14);
+title('Position', 'FontSize', 14);
 grid on;
+set(gca, 'FontSize', 12);
 
 subplot(3, 3, 2);
-plot(t, theta * 180/pi);
+plot(t, rad2deg(theta), 'LineWidth', 2);
 hold on;
 yline(rad2deg(theta_limit), 'r--', 'LineWidth', 1.5);
 yline(-rad2deg(theta_limit), 'r--', 'LineWidth', 1.5);
-yline(0, 'k--', 'LineWidth', 1);
+yline(0, 'k:', 'LineWidth', 1);
 hold off;
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('$\theta$ [deg]', 'interpreter', 'latex');
-title('Pitch Angle (Tilt)', 'interpreter', 'latex', 'FontSize', 12);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('$\theta$ [$^\circ$]', 'FontSize', 14);
+title('Pitch Angle', 'FontSize', 14);
 grid on;
-legend('Pitch Angle', 'Ground Limit', '', 'Target', 'Location', 'best');
+legend('$\theta(t)$', 'Ground Limit', '', 'Target', 'Location', 'best');
+set(gca, 'FontSize', 12);
 
 subplot(3, 3, 3);
 plot(t, psi * 180/pi);
@@ -310,7 +314,7 @@ legend('Location', 'best');
 grid on;
 axis equal;
 
-sgtitle('LQR-Controlled Two-wheeled Inverted Pendulum', 'interpreter', 'latex', 'FontSize', 14);
+sgtitle('LQR-Controlled Two-Wheeled Inverted Pendulum', 'FontSize', 18, 'FontWeight', 'bold');
 
 %% Performance metrics
 fprintf('\n--- Performance Metrics ---\n');

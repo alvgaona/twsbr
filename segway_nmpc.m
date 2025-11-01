@@ -203,6 +203,7 @@ x_ref_hist = zeros(ny, N_steps+1);
 
 % Create waitbar
 h_wait = waitbar(0, 'Running NMPC simulation...');
+set(findall(h_wait, 'Type', 'text'), 'Interpreter', 'none');
 
 for k = 1:N_steps
     % Update waitbar
@@ -285,106 +286,117 @@ X_global = cumtrapz(t, vx_global);
 Y_global = cumtrapz(t, vy_global);
 
 %% Plot results
-figure('Position', [100, 100, 1400, 900]);
+figure('Position', [100, 100, 1400, 900], 'Color', 'w');
+set(0, 'DefaultTextInterpreter', 'latex');
+set(0, 'DefaultLegendInterpreter', 'latex');
 
 subplot(3, 3, 1);
-plot(t, x, 'b-', 'LineWidth', 1.5);
+plot(t, x, 'b-', 'LineWidth', 2);
 hold on;
-plot(t, x_ref_traj, 'r--', 'LineWidth', 1.5);
+plot(t, x_ref_traj, 'r--', 'LineWidth', 2);
 hold off;
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('x [m]', 'interpreter', 'latex');
-title('Position Tracking', 'interpreter', 'latex', 'FontSize', 12);
-legend({'x (actual)', 'x_{ref} (desired)'}, 'Location', 'best');
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('$x$ [m]', 'FontSize', 14);
+title('Position Tracking', 'FontSize', 14);
+legend({'$x$ (actual)', '$x_{\mathrm{ref}}$ (desired)'}, 'Location', 'best');
 grid on;
+set(gca, 'FontSize', 12);
 
 subplot(3, 3, 2);
-plot(t, rad2deg(theta));
+plot(t, rad2deg(theta), 'LineWidth', 2, 'DisplayName', 'Pitch');
 hold on;
-yline(rad2deg(theta_limit), 'r--', 'LineWidth', 1.5);
-yline(-rad2deg(theta_limit), 'r--', 'LineWidth', 1.5);
-yline(rad2deg(max_theta), 'm--', 'LineWidth', 1);
-yline(-rad2deg(max_theta), 'm--', 'LineWidth', 1);
-yline(0, 'k--', 'LineWidth', 1);
+yline(rad2deg(theta_limit), 'r--', 'LineWidth', 1.5, 'DisplayName', 'Ground Contact');
+yline(-rad2deg(theta_limit), 'r--', 'LineWidth', 1.5, 'HandleVisibility', 'off');
+yline(rad2deg(max_theta), 'm--', 'LineWidth', 1, 'DisplayName', 'State Constraint');
+yline(-rad2deg(max_theta), 'm--', 'LineWidth', 1, 'HandleVisibility', 'off');
+yline(0, 'k--', 'LineWidth', 1, 'DisplayName', 'Target');
 hold off;
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('$\theta$ [deg]', 'interpreter', 'latex');
-title('Pitch Angle (Tilt)', 'interpreter', 'latex', 'FontSize', 12);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('$\theta$ [$^\circ$]', 'FontSize', 14);
+title('Pitch Angle (Tilt)', 'FontSize', 14);
 grid on;
-legend('Pitch', 'Ground Contact', '', 'State Constraint', '', 'Target', 'Location', 'best');
+legend('Location', 'best');
+set(gca, 'FontSize', 12);
 
 subplot(3, 3, 3);
-plot(t, rad2deg(psi_wrapped));
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('$\psi$ [deg]', 'interpreter', 'latex');
-title('Yaw Angle (wrapped)', 'interpreter', 'latex', 'FontSize', 12);
+plot(t, rad2deg(psi_wrapped), 'LineWidth', 2);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('$\psi$ [$^\circ$]', 'FontSize', 14);
+title('Yaw Angle (wrapped)', 'FontSize', 14);
 grid on;
+set(gca, 'FontSize', 12);
 
 subplot(3, 3, 4);
-plot(t, dx, 'b-', 'LineWidth', 1.5);
+plot(t, dx, 'b-', 'LineWidth', 2);
 hold on;
-plot(t, dx_ref_traj, 'r--', 'LineWidth', 1.5);
+plot(t, dx_ref_traj, 'r--', 'LineWidth', 2);
 hold off;
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('$\dot{x}$ [m/s]', 'interpreter', 'latex');
-title('Linear Velocity', 'interpreter', 'latex', 'FontSize', 12);
-legend({'$\dot{x}$ (actual)', '$\dot{x}_{ref}$'}, 'interpreter', 'latex', 'Location', 'best');
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('$\dot{x}$ [m/s]', 'FontSize', 14);
+title('Linear Velocity', 'FontSize', 14);
+legend({'$\dot{x}$ (actual)', '$\dot{x}_{\mathrm{ref}}$'}, 'Location', 'best');
 grid on;
+set(gca, 'FontSize', 12);
 
 subplot(3, 3, 5);
-plot(t, rad2deg(dtheta));
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('$\dot{\theta}$ [deg/s]', 'interpreter', 'latex');
-title('Pitch Angular Velocity', 'interpreter', 'latex', 'FontSize', 12);
+plot(t, rad2deg(dtheta), 'LineWidth', 2);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('$\dot{\theta}$ [$^\circ$/s]', 'FontSize', 14);
+title('Pitch Angular Velocity', 'FontSize', 14);
 grid on;
+set(gca, 'FontSize', 12);
 
 subplot(3, 3, 6);
-plot(t, rad2deg(dpsi));
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('$\dot{\psi}$ [deg/s]', 'interpreter', 'latex');
-title('Yaw Angular Velocity', 'interpreter', 'latex', 'FontSize', 12);
+plot(t, rad2deg(dpsi), 'LineWidth', 2);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('$\dot{\psi}$ [$^\circ$/s]', 'FontSize', 14);
+title('Yaw Angular Velocity', 'FontSize', 14);
 grid on;
+set(gca, 'FontSize', 12);
 
 subplot(3, 3, 7);
-stairs(t(1:end-1), u_hist(1,:), 'b-', 'LineWidth', 1.5, 'DisplayName', '\tau_L (Left)');
+stairs(t(1:end-1), u_hist(1,:), 'b-', 'LineWidth', 2, 'DisplayName', '$\tau_L$ (Left)');
 hold on;
-stairs(t(1:end-1), u_hist(2,:), 'r-', 'LineWidth', 1.5, 'DisplayName', '\tau_R (Right)');
-yline(max_torque, 'k--', 'Limit', 'LineWidth', 1);
-yline(-max_torque, 'k--', 'LineWidth', 1);
+stairs(t(1:end-1), u_hist(2,:), 'r-', 'LineWidth', 2, 'DisplayName', '$\tau_R$ (Right)');
+yline(max_torque, 'k--', 'LineWidth', 1, 'HandleVisibility', 'off');
+yline(-max_torque, 'k--', 'LineWidth', 1, 'HandleVisibility', 'off');
 hold off;
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('Torque [Nm]', 'interpreter', 'latex');
-title('Control Inputs', 'interpreter', 'latex', 'FontSize', 12);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('Torque [Nm]', 'FontSize', 14);
+title('Control Inputs', 'FontSize', 14);
 legend('Location', 'best');
 grid on;
+set(gca, 'FontSize', 12);
 
 subplot(3, 3, 8);
-plot(t, z_cm, 'b-', 'LineWidth', 1.5, 'DisplayName', 'Center of Mass');
+plot(t, z_cm, 'b-', 'LineWidth', 2, 'DisplayName', 'Center of Mass');
 hold on;
-plot(t, z_tip, 'r-', 'LineWidth', 1.5, 'DisplayName', 'Body Tip');
-yline(0, 'k--', 'Ground', 'LineWidth', 1.5);
-yline(r, 'g--', 'Wheel Axle', 'LineWidth', 1);
+plot(t, z_tip, 'r-', 'LineWidth', 2, 'DisplayName', 'Body Tip');
+yline(0, 'k--', 'Ground', 'LineWidth', 1.5, 'HandleVisibility', 'off');
+yline(r, 'g--', 'Wheel Axle', 'LineWidth', 1, 'HandleVisibility', 'off');
 hold off;
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('Z Position [m]', 'interpreter', 'latex');
-title('Vertical Position', 'interpreter', 'latex', 'FontSize', 12);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('$z$ [m]', 'FontSize', 14);
+title('Vertical Position', 'FontSize', 14);
 legend('Location', 'best');
 grid on;
+set(gca, 'FontSize', 12);
 
 subplot(3, 3, 9);
-plot(X_global, Y_global, 'b-', 'LineWidth', 1.5, 'DisplayName', 'Trajectory');
+plot(X_global, Y_global, 'b-', 'LineWidth', 2, 'DisplayName', 'Trajectory');
 hold on;
 plot(X_global(1), Y_global(1), 'go', 'MarkerSize', 10, 'LineWidth', 2, 'DisplayName', 'Start');
 plot(X_global(end), Y_global(end), 'ro', 'MarkerSize', 10, 'LineWidth', 2, 'DisplayName', 'End');
 hold off;
-xlabel('X (Global) [m]', 'interpreter', 'latex');
-ylabel('Y (Global) [m]', 'interpreter', 'latex');
-title('Top View (Global Frame)', 'interpreter', 'latex', 'FontSize', 12);
+xlabel('$X$ (Global) [m]', 'FontSize', 14);
+ylabel('$Y$ (Global) [m]', 'FontSize', 14);
+title('Top View (Global Frame)', 'FontSize', 14);
 legend('Location', 'best');
 grid on;
 axis equal;
+set(gca, 'FontSize', 12);
 
-sgtitle('NMPC-Controlled Two-wheeled Inverted Pendulum', 'interpreter', 'latex', 'FontSize', 14);
+sgtitle('NMPC-Controlled Two-wheeled Inverted Pendulum', 'FontSize', 18, 'FontWeight', 'bold');
 
 %% Performance metrics
 fprintf('\n--- Trajectory Tracking Performance ---\n');
@@ -411,23 +423,25 @@ fprintf('  Final pitch angle: %.4f deg\n', rad2deg(theta(end)));
 fprintf('  Max pitch angle: %.4f deg\n', rad2deg(max(abs(theta))));
 
 %% Plot tracking error
-figure('Position', [200, 200, 800, 400]);
+figure('Position', [200, 200, 800, 400], 'Color', 'w');
 
 subplot(1, 2, 1);
-plot(t, pos_error, 'LineWidth', 1.5);
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('Position Error [m]', 'interpreter', 'latex');
-title('Position Tracking Error', 'interpreter', 'latex', 'FontSize', 12);
+plot(t, pos_error, 'LineWidth', 2);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('Position Error [m]', 'FontSize', 14);
+title('Position Tracking Error', 'FontSize', 14);
 grid on;
+set(gca, 'FontSize', 12);
 
 subplot(1, 2, 2);
-plot(t, vel_error, 'LineWidth', 1.5);
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('Velocity Error [m/s]', 'interpreter', 'latex');
-title('Velocity Tracking Error', 'interpreter', 'latex', 'FontSize', 12);
+plot(t, vel_error, 'LineWidth', 2);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('Velocity Error [m/s]', 'FontSize', 14);
+title('Velocity Tracking Error', 'FontSize', 14);
 grid on;
+set(gca, 'FontSize', 12);
 
-sgtitle(sprintf('Tracking Errors - %s Trajectory', trajectory_type), 'interpreter', 'latex', 'FontSize', 14);
+sgtitle(sprintf('Tracking Errors - %s Trajectory', trajectory_type), 'FontSize', 18, 'FontWeight', 'bold');
 
 %% Helper function: Discrete-time dynamics
 function x_next = segway_discrete_dynamics(x, u, Ts, params)
@@ -449,7 +463,6 @@ end
 function dx_dt = segway_dynamics_continuous(x, u, params)
     % Extract states
     theta = x(2);
-    psi = x(3);
     dx = x(4);
     dtheta = x(5);
     dpsi = x(6);

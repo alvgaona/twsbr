@@ -87,57 +87,65 @@ X_global = cumtrapz(t, vx_global);
 Y_global = cumtrapz(t, vy_global);
 
 %% Plot results
-figure('Position', [100, 100, 1200, 800]);
+figure('Position', [100, 100, 1200, 800], 'Color', 'w');
+set(0, 'DefaultTextInterpreter', 'latex');
+set(0, 'DefaultLegendInterpreter', 'latex');
 
 subplot(3, 2, 1);
-plot(t, x);
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('x [m]', 'interpreter', 'latex');
-title('Position', 'interpreter', 'latex', 'FontSize', 14);
+plot(t, x, 'LineWidth', 2);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('$x$ [m]', 'FontSize', 14);
+title('Position', 'FontSize', 14);
 grid on;
+set(gca, 'FontSize', 12);
 
 subplot(3, 2, 2);
-plot(t, dx);
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('$\dot{x}$ $\left[\frac{m}{s}\right]$', 'interpreter', 'latex');
-title('Linear Velocity', 'interpreter', 'latex', 'FontSize', 14);
+plot(t, dx, 'LineWidth', 2);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('$\dot{x}$ [m/s]', 'FontSize', 14);
+title('Linear Velocity', 'FontSize', 14);
 grid on;
+set(gca, 'FontSize', 12);
 
 subplot(3, 2, 3);
-plot(t, theta * 180/pi);
+plot(t, rad2deg(theta), 'LineWidth', 2);
 hold on;
 % Plot ground contact limits
 yline(rad2deg(theta_limit), 'r--', 'LineWidth', 1.5);
 yline(-rad2deg(theta_limit), 'r--', 'LineWidth', 1.5);
 hold off;
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('$\theta$ [deg]', 'interpreter', 'latex');
-title('Pitch Angle (Tilt)', 'interpreter', 'latex', 'FontSize', 14);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('$\theta$ [$^\circ$]', 'FontSize', 14);
+title('Pitch Angle (Tilt)', 'FontSize', 14);
 grid on;
 legend('Pitch Angle', 'Ground Limit', 'Location', 'best');
+set(gca, 'FontSize', 12);
 
 subplot(3, 2, 4);
-plot(t, dtheta * 180/pi);
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('$\dot{\theta}$ $\left[\frac{deg}{s}\right]$', 'interpreter', 'latex');
-title('Pitch Angular Velocity', 'interpreter', 'latex', 'FontSize', 14);
+plot(t, rad2deg(dtheta), 'LineWidth', 2);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('$\dot{\theta}$ [$^\circ$/s]', 'FontSize', 14);
+title('Pitch Angular Velocity', 'FontSize', 14);
 grid on;
+set(gca, 'FontSize', 12);
 
 subplot(3, 2, 5);
-plot(t, psi * 180/pi);
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('$\psi$ [deg]', 'interpreter', 'latex');
-title('Yaw Angle', 'interpreter', 'latex', 'FontSize', 14);
+plot(t, rad2deg(psi), 'LineWidth', 2);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('$\psi$ [$^\circ$]', 'FontSize', 14);
+title('Yaw Angle', 'FontSize', 14);
 grid on;
+set(gca, 'FontSize', 12);
 
 subplot(3, 2, 6);
-plot(t, dpsi * 180/pi);
-xlabel('Time [s]', 'interpreter', 'latex');
-ylabel('$\dot{\psi}$ $\left[\frac{deg}{s}\right]$', 'interpreter', 'latex');
-title('Yaw Angular Velocity', 'interpreter', 'latex', 'FontSize', 14);
+plot(t, rad2deg(dpsi), 'LineWidth', 2);
+xlabel('$t$ [s]', 'FontSize', 14);
+ylabel('$\dot{\psi}$ [$^\circ$/s]', 'FontSize', 14);
+title('Yaw Angular Velocity', 'FontSize', 14);
 grid on;
+set(gca, 'FontSize', 12);
 
-sgtitle('Two-wheeled Inverted Pendulum Balancing Mobile Robot', 'interpreter', 'latex')
+sgtitle('Two-wheeled Inverted Pendulum Balancing Mobile Robot', 'FontSize', 18, 'FontWeight', 'bold');
 
 %% Plot Z positions and trajectories
 % figure('Position', [150, 150, 1400, 500]);
