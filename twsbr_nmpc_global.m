@@ -83,7 +83,7 @@ fprintf('State constraints:\n');
 fprintf('  Pitch angle: ±%.1f deg\n', rad2deg(max_theta));
 
 %% Define prediction model
-nlobj.Model.StateFcn = @(x, u) segway_discrete_dynamics(x, u, Ts, params);
+nlobj.Model.StateFcn = @(x, u) twsbr_discrete_dynamics(x, u, Ts, params);
 nlobj.Model.IsContinuousTime = false;
 nlobj.Model.OutputFcn = @(x, u) x;
 
@@ -250,7 +250,7 @@ for k = 1:N_steps
     u_hist(:, k) = u_opt;
 
     % Simulate one step
-    x_next = segway_discrete_dynamics(x_current, u_opt, Ts, params);
+    x_next = twsbr_discrete_dynamics(x_current, u_opt, Ts, params);
 
     % Check ground contact
     if abs(x_next(2)) > theta_limit
@@ -370,14 +370,14 @@ set(gca, 'FontSize', 12);
 
 sgtitle('NMPC-Based Global Path Following', 'FontSize', 18, 'FontWeight', 'bold');
 
-function x_next = segway_discrete_dynamics(x, u, Ts, params)
-    dx_dt = segway_dynamics_continuous(x, u, params);
+function x_next = twsbr_discrete_dynamics(x, u, Ts, params)
+    dx_dt = twsbr_dynamics_continuous(x, u, params);
 
     % Euler step
     x_next = x + Ts * dx_dt;
 end
 
-function dx_dt = segway_dynamics_continuous(x, u, params)
+function dx_dt = twsbr_dynamics_continuous(x, u, params)
     theta = x(2);
     dx = x(4);
     dtheta = x(5);

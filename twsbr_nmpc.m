@@ -111,7 +111,7 @@ fprintf('  Pitch rate: %.3f rad/s (%.2f deg/s)\n', noise_std(5), rad2deg(noise_s
 fprintf('  Yaw rate: %.3f rad/s (%.2f deg/s)\n', noise_std(6), rad2deg(noise_std(6)));
 
 %% Define prediction model (nonlinear dynamics)
-nlobj.Model.StateFcn = @(x, u) segway_discrete_dynamics(x, u, Ts, mpc_params);
+nlobj.Model.StateFcn = @(x, u) twsbr_discrete_dynamics(x, u, Ts, mpc_params);
 nlobj.Model.IsContinuousTime = false;
 
 % Output function (full state measurement)
@@ -286,7 +286,7 @@ for k = 1:N_steps
     u_hist(:, k) = u_opt;
 
     % Apply control with true state
-    x_next = segway_discrete_dynamics(x_true, u_opt, Ts, params);
+    x_next = twsbr_discrete_dynamics(x_true, u_opt, Ts, params);
 
     % Check for ground contact
     if abs(x_next(2)) > theta_limit
@@ -503,19 +503,19 @@ set(gca, 'FontSize', 12);
 sgtitle('White Noise vs Drift Comparison', 'FontSize', 18, 'FontWeight', 'bold');
 
 %% Helper function: Discrete-time dynamics
-function x_next = segway_discrete_dynamics(x, u, Ts, params)
+function x_next = twsbr_discrete_dynamics(x, u, Ts, params)
     % One-step Euler integration of continuous dynamics
     % More accurate methods (RK4, ode45) could be used
     
     % Continuous dynamics
-    dx_dt = segway_dynamics_continuous(x, u, params);
+    dx_dt = twsbr_dynamics_continuous(x, u, params);
     
     % Euler step
     x_next = x + Ts * dx_dt;
 end
 
 %% Helper function: Continuous dynamics
-function dx_dt = segway_dynamics_continuous(x, u, params)
+function dx_dt = twsbr_dynamics_continuous(x, u, params)
     % Extract states
     theta = x(2);
     dx = x(4);

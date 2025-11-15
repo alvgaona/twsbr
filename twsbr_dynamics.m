@@ -1,4 +1,4 @@
-function dstate = segway_dynamics(t, state, params, control_func)
+function dstate = twsbr_dynamics(t, state, params, control_func)
 % SEGWAY_DYNAMICS Computes the dynamics of a two-wheeled inverted pendulum
 %
 % Inputs:
