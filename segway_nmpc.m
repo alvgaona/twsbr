@@ -60,13 +60,13 @@ nlobj.ManipulatedVariables(1).Name = 'tau_L';
 nlobj.ManipulatedVariables(2).Name = 'tau_R';
 
 %% Input constraints
-max_torque = 50; % Maximum torque per wheel (Nm)
+max_torque = 10; % Maximum torque per wheel (Nm)
 nlobj.ManipulatedVariables(1).Min = -max_torque;
 nlobj.ManipulatedVariables(1).Max = max_torque;
 nlobj.ManipulatedVariables(2).Min = -max_torque;
 nlobj.ManipulatedVariables(2).Max = max_torque;
 
-max_torque_rate = 200; % Μaximum torque rate per wheel (Nm/s)
+max_torque_rate = 100; % Μaximum torque rate per wheel (Nm/s)
 nlobj.ManipulatedVariables(1).RateMin = -max_torque_rate * Ts;
 nlobj.ManipulatedVariables(1).RateMax = max_torque_rate * Ts;
 nlobj.ManipulatedVariables(2).RateMin = -max_torque_rate * Ts;
@@ -77,7 +77,7 @@ fprintf('  Max torque: ±%.1f Nm\n', max_torque);
 fprintf('  Max torque rate: ±%.1f Nm/s\n', max_torque_rate);
 
 %% State constraints
-max_theta = deg2rad(30);
+max_theta = deg2rad(90);
 
 % Keep robot from falling
 nlobj.States(2).Min = -max_theta;
@@ -86,8 +86,12 @@ nlobj.States(2).Max = max_theta;
 fprintf('State constraints:\n');
 fprintf('  Pitch angle: ±%.1f deg\n', rad2deg(max_theta));
 
+mpc_params = struct('d', d+d*0.1, 'l', l+0.1*l, 'r', r-0.1*r, 'mb', mb + 0.1*mb, 'mw', mw-0.1*mw, ...
+                'J', J+0.1*J, 'K', K-0.1*K, 'I1', I1+0.1*I1, 'I2', I2-0.1*I2, 'I3', I3+0.1*I3, ...
+                'calpha', calpha+0.1*calpha, 'g', g+0.1*g, 'theta_limit', theta_limit);
+
 %% Define prediction model (nonlinear dynamics)
-nlobj.Model.StateFcn = @(x, u) segway_discrete_dynamics(x, u, Ts, params);
+nlobj.Model.StateFcn = @(x, u) segway_discrete_dynamics(x, u, Ts, mpc_params);
 nlobj.Model.IsContinuousTime = false;
 
 % Output function (full state measurement)
@@ -96,10 +100,10 @@ nlobj.Model.OutputFcn = @(x, u) x;  % y = x
 %% Define cost function (stage cost)
 % Weights for state tracking
 Q_nmpc = diag([
-    100,    ... x [high - track trajectory]
-    50,     ... θ [moderate - stay upright]
+    0,    ... x [high - track trajectory]
+    100,     ... θ [moderate - stay upright]
     100,    ... ψ [high - lock heading at 0°]
-    10,     ... dx [track velocity]
+    0,     ... dx [track velocity]
     10,     ... dθ [penalize pitch rate]
     20      ... dψ [penalize yaw drift]
 ]);
@@ -129,8 +133,8 @@ fprintf('NMPC controller validated successfully!\n');
 
 %% Initial conditions
 x0 = 0;          % Initial forward position (m) - start at origin
-theta0 = 0.1;    % Initial pitch angle (rad) - small perturbation (~5.7 deg)
-psi0 = 0;        % Initial yaw angle (rad)
+theta0 = 0.4;    % Initial pitch angle (rad) - small perturbation (~5.7 deg)
+psi0 = 3.14;        % Initial yaw angle (rad)
 dx0 = 0;         % Initial forward velocity (m/s)
 dtheta0 = 0;     % Initial pitch angular velocity (rad/s)
 dpsi0 = 0;       % Initial yaw angular velocity (rad/s)
@@ -154,7 +158,7 @@ x_hist(:, 1) = x_init;
 
 %% Define reference trajectory (time-varying)
 % Trajectory options (choose one):
-trajectory_type = 'sinusoid';  % 'sinusoid', 'step', 'ramp', 'figure8'
+trajectory_type = 'step';  % 'sinusoid', 'step', 'ramp', 'figure8'
 
 switch trajectory_type
     case 'sinusoid'
@@ -396,7 +400,7 @@ grid on;
 axis equal;
 set(gca, 'FontSize', 12);
 
-sgtitle('NMPC-Controlled Two-wheeled Inverted Pendulum', 'FontSize', 18, 'FontWeight', 'bold');
+sgtitle('NMPC-Controlled Two-Wheeled Self-Balancing Robot', 'FontSize', 18, 'FontWeight', 'bold');
 
 %% Performance metrics
 fprintf('\n--- Trajectory Tracking Performance ---\n');
@@ -441,22 +445,18 @@ title('Velocity Tracking Error', 'FontSize', 14);
 grid on;
 set(gca, 'FontSize', 12);
 
-sgtitle(sprintf('Tracking Errors - %s Trajectory', trajectory_type), 'FontSize', 18, 'FontWeight', 'bold');
+% sgtitle(sprintf('Tracking Errors - %s Trajectory', trajectory_type), 'FontSize', 18, 'FontWeight', 'bold');
 
 %% Helper function: Discrete-time dynamics
 function x_next = segway_discrete_dynamics(x, u, Ts, params)
     % One-step Euler integration of continuous dynamics
     % More accurate methods (RK4, ode45) could be used
-
+    
     % Continuous dynamics
     dx_dt = segway_dynamics_continuous(x, u, params);
-
+    
     % Euler step
     x_next = x + Ts * dx_dt;
-
-    % Note: Yaw angle wrapping is NOT done here because it creates
-    % discontinuities that break gradient-based NMPC optimization.
-    % For trajectories without yaw control, unbounded yaw is acceptable.
 end
 
 %% Helper function: Continuous dynamics
