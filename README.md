@@ -1,4 +1,8 @@
-# Two-wheeld self-balancing robot
+# Two-wheeled self-balancing robot
+
+<div align="center">
+    <img src="./media/twsbr-animation.gif" alt="TWSBR Animation"/>
+</div>
 
 This project is a two-wheeled self-balancing robot (TWSBR).
 The simulations are based in OpenModelica and MATLAB.
