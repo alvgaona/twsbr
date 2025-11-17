@@ -1,5 +1,4 @@
 model SegwaySystem "Complete Segway with block diagram structure"
-  // Instantiate components
   SegwayDynamics plant(d = 0.59, l = 0.14, r = 0.2, mb = 41, mw = 2, J = 0.04, K_inertia = 0.02, I1 = 1, I2 = 1, I3 = 1, calpha = 0.01, g = 9.81, theta(start = 0.5), x(start = 0), psi(start = 3.1415)) annotation(
     Placement(transformation(origin = {30, 10}, extent = {{-10, -10}, {10, 10}})));
   LQRController lQRController(max_torque = 20) annotation(
@@ -17,8 +16,6 @@ model SegwaySystem "Complete Segway with block diagram structure"
   DriftingVectorNoise driftingVectorNoise(n = 6, sigma_d = {0.005, 0.003, 0.003, 0.01, 0.005, 0.005})  annotation(
     Placement(transformation(origin = {-4, -30}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
 equation
-// Connect controller to plant
-// Connect safety monitor
   connect(ruidoSensor.y, add.u1) annotation(
     Line(points = {{42, -70}, {52, -70}, {52, -36}, {42, -36}}, color = {0, 0, 127}, thickness = 0.5));
   connect(lQRController.torque, plant.u) annotation(
@@ -34,15 +31,5 @@ equation
   connect(driftingVectorNoise.u,add.y) annotation(
     Line(points = {{8, -30}, {20, -30}}, color = {0, 0, 127}, thickness = 0.5));
   annotation(
-    Icon(graphics = {Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 0}, fillColor = {170, 255, 170}, fillPattern = FillPattern.Solid), Text(extent = {{-80, 40}, {80, -40}}, textString = "Segway"), Text(extent = {{-150, 150}, {150, 110}}, textString = "%name")}),
-    Documentation(info = "<html>
-<h4>Segway System Block Diagram</h4>
-<p>Component-based Segway model with:</p>
-<ul>
-<li>SegwayDynamics: Physical plant equations</li>
-<li>LQRController: State feedback control</li>
-<li>GroundContactDetector: Safety monitoring</li>
-</ul>
-</html>"),
-    uses(Modelica(version = "4.0.0")));
+    Icon(graphics = {Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 0}, fillColor = {170, 255, 170}, fillPattern = FillPattern.Solid), Text(extent = {{-80, 40}, {80, -40}}, textString = "Segway"), Text(extent = {{-150, 150}, {150, 110}}, textString = "%name")}));
 end SegwaySystem;

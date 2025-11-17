@@ -1,5 +1,5 @@
 model SegwayDynamics "Core dynamics equations"
-  // Parameters
+
   parameter Real d = 0.59 "Distance between wheels";
   parameter Real l = 0.14 "Pendulum length";
   parameter Real r = 0.2 "Wheel radius";
@@ -24,9 +24,6 @@ model SegwayDynamics "Core dynamics equations"
   Modelica.Blocks.Interfaces.RealOutput state[6] "State vector [x,theta,psi,dx,dtheta,dpsi]" 
     annotation(Placement(transformation(extent={{100,-10},{120,10}})));
       
-  
-
-  
   // State variables
   Real x(start=0) "Forward position";
   Real theta(start=0) "Pitch angle";
